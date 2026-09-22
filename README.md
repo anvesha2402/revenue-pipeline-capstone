@@ -56,7 +56,7 @@ One caveat found during modeling: the Expansion model's near-perfect ROC-AUC (1.
 - Pull from a live Salesforce/HubSpot export instead of synthetic generation
 - Build point-in-time feature snapshots (not full-lifetime aggregates) to avoid any temporal leakage in a production churn/expansion model
 - Add a real rep-forecast field to properly test the Deal-Win hypothesis (stage-based confidence was used here as a documented stand-in)
-- Model trajectories that can shift or blend mid-lifecycle, so the churn times expansion cross-check can actually surface overlapping accounts
+- Model trajectories that can shift or blend mid-lifecycle, so the churn-and-expansion cross-check can actually surface overlapping accounts
 - Re-validate whether Expansion's near-perfect signal survives real, noisier usage data (expect it to drop substantially — see the caveat above)
 
 ## Status
