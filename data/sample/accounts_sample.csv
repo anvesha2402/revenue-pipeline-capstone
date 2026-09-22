@@ -1,0 +1,51 @@
+account_id,account_name,industry,region,company_size,plan_tier,contract_type,signup_date,initial_mrr,csm_owner,account_status,churn_date,current_mrr,current_plan_tier
+A100004,Lewis-Whitehead,Telecom,Europe,1-50,Starter,Annual,2024-07-06 20:17:37,183.33,Danielle J.,Active,,183.33,Starter
+A100014,"Thomas, White and Jensen",E-commerce/Retail,APAC,1000+,Enterprise,Annual,2025-09-19 14:30:54,6591.67,Joshua W.,Active,,6591.67,Enterprise
+A100021,Lee-White,Telecom,North America,201-1000,Business,Monthly,2024-06-05 00:04:01,2108.33,Jill R.,Active,,2108.33,Business
+A100036,"Phelps, York and Randolph",Media/Entertainment,APAC,201-1000,Business,Annual,2026-01-07 06:10:12,2050.0,Patricia M.,Active,,2050.0,Business
+A100041,"Murray, Dunn and Roberts",Media/Entertainment,Europe,1-50,Starter,Monthly,2025-10-13 02:36:53,366.67,Robert J.,Active,,366.67,Starter
+A100047,King and Sons,SaaS/Software,North America,51-200,Growth,Annual,2026-05-22 17:09:05,600.0,Jeffery W.,Active,,600.0,Growth
+A100077,"Carpenter, Lynn and Howard",Manufacturing,APAC,201-1000,Business,Annual,2024-02-29 14:27:35,3283.33,Anthony G.,Churned,2025-08-01 14:27:35,3283.33,Business
+A100084,"Rios, Garcia and Harvey",EdTech,North America,51-200,Growth,Annual,2025-05-31 16:23:03,650.0,Debra G.,Churned,2025-12-01 16:23:03,650.0,Growth
+A100088,Stewart Group,EdTech,India,1-50,Starter,Monthly,2025-12-10 00:02:29,233.33,Jeffrey L.,Active,,233.33,Starter
+A100112,Jensen-Torres,FinTech,North America,201-1000,Business,Annual,2024-11-13 10:02:23,2341.67,Lisa S.,Churned,2026-05-01 10:02:23,2341.67,Business
+A100117,"Hernandez, Knight and Aguirre",EdTech,LATAM,1-50,Starter,Annual,2023-11-26 05:47:49,291.67,Linda W.,Active,,291.67,Starter
+A100139,Jackson-Edwards,FinTech,North America,1000+,Enterprise,Annual,2024-01-12 13:53:21,5766.67,Matthew M.,Churned,2025-04-01 13:53:21,5766.67,Enterprise
+A100142,Joseph Ltd,Logistics,APAC,51-200,Growth,Monthly,2026-07-01 01:25:31,733.33,Susan R.,Active,,733.33,Growth
+A100151,Hill-Ward,SaaS/Software,North America,1000+,Enterprise,Monthly,2024-08-30 10:22:20,4533.33,Christopher D.,Churned,2026-08-01 10:22:20,4533.33,Enterprise
+A100157,"Quinn, Humphrey and Ford",Telecom,North America,51-200,Growth,Annual,2025-08-19 19:09:24,825.0,Melanie M.,Active,,825.0,Growth
+A100181,Hampton-Tucker,Manufacturing,North America,1000+,Enterprise,Annual,2023-12-09 14:45:34,4800.0,Lindsay B.,Active,,4800.0,Enterprise
+A100217,Thompson PLC,Manufacturing,North America,201-1000,Business,Annual,2025-08-28 05:09:43,1733.33,Amanda D.,Active,,1733.33,Business
+A100226,Wilkinson and Sons,Healthcare IT,India,51-200,Growth,Annual,2026-04-12 05:06:26,533.33,Nicholas A.,Active,,533.33,Growth
+A100228,"Gonzalez, Gross and Sims",Logistics,North America,51-200,Growth,Monthly,2025-12-27 15:14:50,566.67,Maria M.,Churned,2026-06-01 15:14:50,566.67,Growth
+A100230,"Jones, Smith and Hunter",SaaS/Software,APAC,1000+,Enterprise,Annual,2025-08-14 00:36:29,2891.67,Michelle R.,Active,,2891.67,Enterprise
+A100231,Hess PLC,Healthcare IT,India,1000+,Enterprise,Annual,2025-06-16 13:26:47,5266.67,Janet W.,Active,,5266.67,Enterprise
+A100238,Hammond-Lewis,Logistics,North America,51-200,Growth,Annual,2025-06-29 03:54:43,566.67,Jeremy R.,Active,,566.67,Growth
+A100246,Arnold PLC,E-commerce/Retail,LATAM,1000+,Enterprise,Annual,2025-02-20 04:11:43,3833.33,Christopher H.,Active,,3833.33,Enterprise
+A100274,"Kennedy, Rowe and Diaz",Professional Services,India,51-200,Growth,Annual,2024-04-28 06:11:13,725.0,Craig R.,Active,,725.0,Growth
+A100280,Vance PLC,Manufacturing,North America,201-1000,Business,Monthly,2023-09-06 06:46:12,2033.33,Cynthia D.,Active,,2033.33,Business
+A100281,"Vincent, Anderson and Mason",SaaS/Software,India,1000+,Enterprise,Monthly,2025-04-27 22:28:33,7800.0,Mitchell C.,Active,,7800.0,Enterprise
+A100300,Sanders PLC,Media/Entertainment,Europe,201-1000,Business,Annual,2024-04-11 08:33:30,1800.0,Joseph Z.,Active,,1800.0,Business
+A100301,Bates PLC,SaaS/Software,North America,51-200,Growth,Monthly,2025-01-10 08:52:53,975.0,Deborah L.,Churned,2025-04-01 08:52:53,975.0,Growth
+A100310,"Martin, Palmer and Griffin",FinTech,India,201-1000,Business,Annual,2025-10-24 04:57:15,1575.0,George D.,Active,,1575.0,Business
+A100313,Knight PLC,EdTech,North America,51-200,Growth,Monthly,2024-03-08 21:47:51,916.67,Frank G.,Active,,916.67,Growth
+A100324,"Brennan, Thomas and Dennis",FinTech,Europe,1-50,Starter,Annual,2024-08-16 03:42:08,266.67,Veronica B.,Active,,266.67,Starter
+A100340,Williams-Juarez,Telecom,North America,51-200,Growth,Monthly,2026-07-10 00:53:26,391.67,Angela C.,Active,,391.67,Growth
+A100345,Brown LLC,Healthcare IT,India,1000+,Enterprise,Annual,2024-05-12 05:37:59,8116.67,Megan P.,Active,,8116.67,Enterprise
+A100353,Williams and Sons,Manufacturing,Europe,201-1000,Business,Annual,2025-12-18 20:07:22,2183.33,Jeremy J.,Active,,2183.33,Business
+A100354,"Velez, Ward and Harrison",E-commerce/Retail,MEA,1-50,Starter,Annual,2026-05-03 21:01:30,183.33,Leslie A.,Active,,183.33,Starter
+A100355,Keith-Williams,Professional Services,Europe,201-1000,Business,Annual,2024-01-28 08:18:55,1816.67,Jason H.,Churned,2024-12-01 08:18:55,1816.67,Business
+A100360,"Nguyen, Padilla and Boyd",EdTech,MEA,1000+,Enterprise,Monthly,2024-04-28 02:49:13,6175.0,Nancy E.,Churned,2025-04-01 02:49:13,6175.0,Enterprise
+A100361,Davenport-Baker,EdTech,Europe,201-1000,Business,Annual,2023-04-27 22:58:20,1958.33,Diana F.,Active,,1958.33,Business
+A100374,"Hudson, Bennett and Gray",FinTech,North America,1-50,Starter,Monthly,2026-06-12 23:24:19,233.33,Robin E.,Active,,233.33,Starter
+A100375,"Valdez, Houston and Black",Healthcare IT,India,1000+,Enterprise,Annual,2026-06-03 06:49:54,4533.33,Joseph W.,Active,,4533.33,Enterprise
+A100389,Kaufman-Walker,SaaS/Software,APAC,1-50,Growth,Annual,2023-03-29 14:13:30,275.0,Anna B.,Active,,568.44,Growth
+A100399,Gomez-Parrish,SaaS/Software,MEA,1000+,Enterprise,Annual,2024-08-15 16:17:36,4300.0,Brenda H.,Active,,4300.0,Enterprise
+A100400,Sparks-Eaton,Professional Services,APAC,1-50,Starter,Annual,2023-11-16 09:51:55,366.67,Reginald R.,Active,,366.67,Starter
+A100409,Shaw and Sons,FinTech,India,1-50,Starter,Monthly,2026-10-20 14:07:50,258.33,Whitney H.,Active,,258.33,Starter
+A100410,Martin-Jones,SaaS/Software,APAC,201-1000,Business,Annual,2023-10-27 12:19:54,1308.33,Christopher W.,Active,,1308.33,Business
+A100430,"Campbell, Hernandez and Moore",Manufacturing,APAC,51-200,Growth,Annual,2026-04-04 16:46:11,658.33,Daniel B.,Active,,658.33,Growth
+A100431,"Love, Wilson and Hall",Professional Services,Europe,1-50,Starter,Monthly,2023-07-05 13:55:10,275.0,Laura H.,Churned,2025-12-01 13:55:10,275.0,Starter
+A100439,Cortez-Olson,Manufacturing,North America,51-200,Growth,Monthly,2024-04-01 10:42:21,716.67,Bryan J.,Active,,716.67,Growth
+A100450,Mendoza-Garza,FinTech,APAC,51-200,Growth,Annual,2025-07-04 19:34:33,883.33,Wendy R.,Churned,2026-07-01 19:34:33,883.33,Growth
+A100451,"Whitaker, Johnson and Williams",Logistics,MEA,1-50,Starter,Annual,2026-02-08 22:15:24,358.33,Tasha V.,Active,,358.33,Starter

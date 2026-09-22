@@ -1,0 +1,51 @@
+lead_id,account_id,created_at,source,industry,region,company_size,web_sessions_30d,content_downloads,demo_requested,email_open_rate,pricing_page_views,engagement_score,lead_status,converted_to_opportunity,conversion_date
+L100000,A100000,2023-04-19 19:07:33,Referral,Telecom,India,1-50,1,0,0,0.355,2,1.0,Disqualified,False,
+L100001,A100001,2025-08-01 10:51:29,Organic Search,Healthcare IT,APAC,51-200,5,1,0,0.622,0,1.72,Disqualified,False,
+L100002,A100002,2025-03-08 22:08:39,Organic Search,SaaS/Software,Europe,1-50,2,1,0,0.467,0,1.2,Disqualified,False,
+L100003,A100003,2024-06-18 23:49:39,Referral,Media/Entertainment,APAC,201-1000,8,1,1,0.344,2,3.13,Working,False,
+L100004,A100004,2024-06-11 20:17:37,Partner,Telecom,Europe,1-50,3,3,0,0.364,4,2.66,Converted,True,2024-06-17 20:17:37
+L100005,A100005,2025-11-12 15:08:26,Referral,E-commerce/Retail,Europe,51-200,2,1,0,0.287,2,1.35,Converted,True,2025-11-22 15:08:26
+L100006,A100006,2023-04-15 18:25:32,Paid Ads,EdTech,APAC,51-200,5,1,1,0.177,0,2.2,Working,False,
+L100007,A100007,2025-04-30 02:11:56,Organic Search,Healthcare IT,Europe,51-200,4,4,0,0.216,1,2.3,Working,False,
+L100008,A100008,2023-09-03 14:11:33,Event/Webinar,Healthcare IT,LATAM,51-200,7,1,1,0.045,1,2.41,Working,False,
+L100009,A100009,2023-04-25 19:15:08,Paid Ads,Manufacturing,Europe,201-1000,9,3,0,0.24,2,2.69,Working,False,
+L100010,A100010,2024-10-03 18:40:08,Outbound SDR,FinTech,MEA,1-50,3,1,0,0.431,0,1.25,Disqualified,False,
+L100011,A100011,2026-04-04 06:48:27,Outbound SDR,Healthcare IT,India,201-1000,7,1,0,0.411,2,2.02,Disqualified,False,
+L100012,A100012,2025-06-15 21:10:16,Organic Search,E-commerce/Retail,LATAM,51-200,6,0,0,0.338,2,1.47,Disqualified,False,
+L100013,A100013,2025-07-16 19:54:11,Organic Search,Professional Services,India,201-1000,9,2,0,0.153,2,2.21,Working,False,
+L100014,A100014,2025-05-24 14:30:54,Paid Ads,E-commerce/Retail,APAC,1000+,9,1,1,0.62,3,3.82,Converted,True,2025-07-01 14:30:54
+L100015,A100015,2025-08-16 05:05:50,Paid Ads,Professional Services,APAC,201-1000,8,1,1,0.0,0,2.25,Working,False,
+L100016,A100016,2024-09-17 14:57:23,Outbound SDR,SaaS/Software,APAC,1-50,4,0,0,0.377,2,1.33,Disqualified,False,
+L100017,A100017,2023-06-06 04:05:32,Outbound SDR,Manufacturing,North America,51-200,5,2,0,0.795,0,2.31,Working,False,
+L100018,A100018,2025-10-20 15:40:27,Organic Search,E-commerce/Retail,North America,51-200,4,1,0,0.469,3,2.01,Disqualified,False,
+L100019,A100019,2024-07-03 00:29:27,Referral,Manufacturing,North America,1-50,2,0,1,0.237,3,2.23,Converted,True,2024-08-12 00:29:27
+L100020,A100020,2024-09-01 22:17:44,Organic Search,Logistics,India,51-200,6,1,0,0.442,2,1.97,Disqualified,False,
+L100021,A100021,2024-03-28 00:04:01,Organic Search,Telecom,North America,201-1000,7,1,0,0.409,2,2.02,Converted,True,2024-04-21 00:04:01
+L100022,A100022,2023-08-11 12:40:19,Outbound SDR,Logistics,APAC,201-1000,4,2,0,0.383,4,2.44,Working,False,
+L100023,A100023,2026-02-03 17:26:11,Outbound SDR,Media/Entertainment,North America,1-50,6,1,0,0.7,1,2.13,Working,False,
+L100024,A100024,2025-08-10 17:32:14,Outbound SDR,Media/Entertainment,North America,201-1000,4,1,0,0.484,2,1.83,Disqualified,False,
+L100025,A100025,2025-02-23 20:55:04,Organic Search,Telecom,APAC,51-200,3,0,0,0.388,1,1.04,Converted,True,2025-04-06 20:55:04
+L100026,A100026,2024-05-05 13:02:04,Referral,Telecom,LATAM,1-50,5,0,0,0.45,2,1.53,Disqualified,False,
+L100027,A100027,2025-09-29 22:42:49,Paid Ads,Logistics,Europe,51-200,5,2,1,0.338,2,3.17,Working,False,
+L100028,A100028,2024-10-26 21:04:27,Partner,FinTech,LATAM,51-200,5,1,1,0.25,0,2.3,Converted,True,2024-11-09 21:04:27
+L100029,A100029,2024-06-24 12:31:32,Outbound SDR,E-commerce/Retail,North America,51-200,4,0,1,0.268,1,2.07,Working,False,
+L100030,A100030,2024-07-03 02:38:40,Event/Webinar,E-commerce/Retail,Europe,201-1000,3,0,0,0.474,1,1.16,Disqualified,False,
+L100031,A100031,2023-10-05 00:05:45,Organic Search,E-commerce/Retail,North America,1-50,6,1,0,0.416,1,1.73,Converted,True,2023-10-13 00:05:45
+L100032,A100032,2023-04-23 07:31:41,Paid Ads,Telecom,Europe,51-200,4,1,0,0.251,4,1.9,Disqualified,False,
+L100033,A100033,2024-11-07 00:55:57,Outbound SDR,FinTech,North America,1-50,3,0,0,0.534,3,1.65,Disqualified,False,
+L100034,A100034,2025-12-18 08:06:18,Paid Ads,Professional Services,North America,1-50,2,0,0,0.358,5,1.7,Disqualified,False,
+L100035,A100035,2023-03-19 19:02:15,Outbound SDR,Professional Services,India,1-50,4,3,0,0.506,5,3.16,Working,False,
+L100036,A100036,2025-11-12 06:10:12,Referral,Media/Entertainment,APAC,201-1000,8,2,0,0.269,1,2.08,Converted,True,2025-11-28 06:10:12
+L100037,A100037,2025-10-05 21:10:39,Partner,Healthcare IT,North America,51-200,5,2,0,0.363,1,1.91,Disqualified,False,
+L100038,A100038,2023-12-04 08:52:53,Organic Search,E-commerce/Retail,LATAM,51-200,4,0,0,0.338,0,0.87,Disqualified,False,
+L100039,A100039,2025-02-08 23:58:25,Event/Webinar,EdTech,APAC,51-200,2,1,1,0.331,2,2.51,Working,False,
+L100040,A100040,2023-07-21 09:56:31,Paid Ads,EdTech,Europe,1-50,8,2,0,0.278,1,2.09,Working,False,
+L100041,A100041,2025-07-13 02:36:53,Referral,Media/Entertainment,Europe,1-50,4,1,0,0.418,1,1.54,Converted,True,2025-07-26 02:36:53
+L100042,A100042,2025-05-03 22:29:59,Referral,Media/Entertainment,North America,51-200,7,1,0,0.357,1,1.75,Converted,True,2025-06-11 22:29:59
+L100043,A100043,2024-03-08 04:00:42,Organic Search,Professional Services,India,201-1000,7,3,1,0.33,0,3.31,Working,False,
+L100044,A100044,2023-03-24 19:04:03,Partner,Logistics,Europe,201-1000,5,2,0,0.02,0,1.23,Disqualified,False,
+L100045,A100045,2026-03-29 06:44:29,Event/Webinar,Logistics,North America,1-50,3,1,1,0.413,1,2.53,Working,False,
+L100046,A100046,2024-06-27 07:01:59,Partner,E-commerce/Retail,North America,51-200,5,0,0,0.361,0,1.01,Disqualified,False,
+L100047,A100047,2025-12-24 17:09:05,Partner,SaaS/Software,North America,51-200,6,0,1,0.238,0,2.03,Converted,True,2025-12-27 17:09:05
+L100048,A100048,2025-04-06 09:11:54,Outbound SDR,Manufacturing,Europe,201-1000,3,2,0,0.301,1,1.62,Disqualified,False,
+L100049,A100049,2025-08-06 20:23:15,Paid Ads,Healthcare IT,APAC,1-50,2,0,0,0.136,2,0.79,Disqualified,False,
