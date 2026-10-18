@@ -1,0 +1,42 @@
+{
+  "as_of": "2026-06-30",
+  "data": "synthetic",
+  "active_accounts": 2106,
+  "active_arr": 69618594.24,
+  "scored_accounts": 1715,
+  "scored_arr": 56393284.56,
+  "scored_share_of_arr": 0.8100319343650109,
+  "net_revenue_retention_12m": 0.8655567375866688,
+  "gross_revenue_retention_12m": 0.8022387117078825,
+  "logo_retention_12m": 0.805668016194332,
+  "retention_cohort_accounts": 988,
+  "open_opportunities": 748,
+  "open_pipeline": 32229150.0,
+  "weighted_open_pipeline": 11196596.871820956,
+  "stalled_pipeline": 6361200.0,
+  "win_rate_12m": 0.3474059003051882,
+  "avg_won_cycle_days": 77.6207906295754,
+  "pipeline_velocity_usd_per_day": 144247.39533063688,
+  "high_churn_risk_accounts": 279,
+  "high_churn_risk_arr": 7539224.3999999985,
+  "expected_arr_loss_next_90d": 2990422.27464051,
+  "high_expansion_accounts": 263,
+  "high_expansion_arr": 9445445.16,
+  "expected_expansion_arr_next_90d": 1134434.9776092886,
+  "quadrant_counts": {
+    "Maintain": 1182,
+    "Protect": 270,
+    "Grow": 254,
+    "Save & grow": 9
+  },
+  "funnel": {
+    "leads": 27009,
+    "leads_converted_to_opp": 7812,
+    "opportunities": 7886,
+    "opportunities_closed": 7138,
+    "opportunities_won": 2420,
+    "opportunities_open": 748,
+    "accounts_total": 2420,
+    "accounts_active_now": 2106
+  }
+}
