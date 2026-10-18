@@ -1,0 +1,20 @@
+{
+  "2025-03-31": {
+    "rows": 504,
+    "same_accounts": true,
+    "max_abs_diff": 0.0,
+    "passed": true
+  },
+  "2025-09-30": {
+    "rows": 941,
+    "same_accounts": true,
+    "max_abs_diff": 0.0,
+    "passed": true
+  },
+  "2026-01-31": {
+    "rows": 1272,
+    "same_accounts": true,
+    "max_abs_diff": 0.0,
+    "passed": true
+  }
+}

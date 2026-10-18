@@ -1,0 +1,14 @@
+feature,mean_abs_shap
+competitor_present,0.32608145
+log_deal_size,0.18301725
+sales_rep_id,0.1615729
+decision_makers_engaged,0.15922788
+engagement_score,0.13648081
+region,0.07510715
+demo_requested,0.04967741
+size_band,0.037518255
+industry,0.029248256
+lead_source,0.020114366
+contact_seniority,0.014035531
+decision_makers_missing,0.00084906036
+deal_size_imputed,0.0

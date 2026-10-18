@@ -1,0 +1,34 @@
+feature,label,mean_abs_shap
+months_to_renewal,Months until renewal,0.82535803
+login_3m,Login rate (last 3 months),0.25018108
+util_3m,Seat utilization (last 3 months),0.18518515
+login_last,Login rate (latest month),0.15153103
+feat_3m,Features adopted (last 3 months),0.1227864
+mrr,Monthly recurring revenue,0.09613075
+high_crit_90d,High/critical tickets (last 90 days),0.08165171
+tickets_90d,Support tickets (last 90 days),0.07555083
+industry,Industry,0.0692941
+feat_last,Features adopted (latest month),0.06275616
+feat_slope_6m,Feature adoption trend (6 months),0.060761377
+util_last,Seat utilization (latest month),0.059648164
+mrr_ratio,Current vs starting contract value,0.043983847
+csat_90d,Support satisfaction score,0.041050304
+login_slope_6m,Login rate trend (6 months),0.039853726
+users_chg_3m,Active-user change vs prior 3 months,0.037514236
+tenure_months,Months as a customer,0.02665739
+events_per_user_3m,Activity per active user,0.024583964
+region,Region,0.024178406
+integrations,Integrations connected,0.019676613
+res_hours_90d,Avg ticket resolution time (hours),0.019198148
+api_3m_growth,API usage growth vs prior 3 months,0.016901882
+tickets_chg,Change in tickets vs prior 90 days,0.016756702
+size_band,Company size,0.01223983
+contract_term_months,Contract length (months),0.010427525
+months_since_last_expansion,Months since last expansion,0.007986325
+seats,Licensed seats,0.0057232026
+account_tier,Plan tier,0.004773941
+feature_req_90d,Feature requests (last 90 days),0.004429802
+limit_hits_3m,Months at seat limit (last 3),0.003053604
+contractions_to_date,Past downgrades,0.0016072971
+esc_90d,Escalated tickets (last 90 days),0.0
+expansions_to_date,Past expansions,0.0

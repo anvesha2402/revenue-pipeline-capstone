@@ -1,133 +1,184 @@
+"""
+Revenue Pipeline Capstone - Streamlit dashboard (v2)
 
-import streamlit as st
-import pandas as pd
+Reads only pre-computed files from ../exports (no model is run inside the app), so it starts fast and
+needs just streamlit, pandas, numpy and matplotlib. All data is synthetic.
+"""
 import json
-import joblib
-import matplotlib.pyplot as plt
-import shap
 import os
 
-st.set_page_config(page_title="Revenue Pipeline Capstone", layout="wide")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import streamlit as st
 
-COLOR_BLUE = "#2a78d6"
-COLOR_GOOD = "#0ca30c"
-COLOR_CRITICAL = "#d03b3b"
-COLOR_MUTED = "#898781"
+BASE = os.path.dirname(os.path.abspath(__file__))
+EXP = os.path.join(BASE, "..", "exports")
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "..", "data")
-MODELS_DIR = os.path.join(BASE_DIR, "models")
+st.set_page_config(page_title="Revenue Pipeline Capstone", page_icon=None, layout="wide")
+
+BLUE, ORANGE, AQUA, INK, INK2, GRID = "#2a78d6", "#eb6834", "#1baf7a", "#0b0b0b", "#52514e", "#e1e0d9"
+plt.rcParams.update({"axes.spines.top": False, "axes.spines.right": False, "axes.edgecolor": "#c3c2b7",
+                     "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.8, "axes.facecolor": "#fcfcfb",
+                     "figure.facecolor": "#fcfcfb", "xtick.color": "#898781", "ytick.color": "#898781",
+                     "axes.labelcolor": INK2, "text.color": INK})
+
+
+def money(x):
+    x = float(x)
+    if abs(x) >= 1e6:
+        return f"${x / 1e6:,.1f}M"
+    if abs(x) >= 1e3:
+        return f"${x / 1e3:,.0f}K"
+    return f"${x:,.0f}"
+
 
 @st.cache_data
-def load_data():
-    master = pd.read_csv(os.path.join(DATA_DIR, "dashboard_master_table.csv"))
-    with open(os.path.join(DATA_DIR, "dashboard_kpis.json")) as f:
-        kpis = json.load(f)
-    with open(os.path.join(DATA_DIR, "funnel_counts.json")) as f:
-        funnel = json.load(f)
-    churn_feat = pd.read_csv(os.path.join(DATA_DIR, "churn_features_matrix.csv"))
-    exp_feat = pd.read_csv(os.path.join(DATA_DIR, "expansion_features_matrix.csv"))
-    return master, kpis, funnel, churn_feat, exp_feat
+def load():
+    k = json.load(open(os.path.join(EXP, "dashboard_kpis.json")))
+    acc = pd.read_csv(os.path.join(EXP, "dashboard_account_health.csv"), parse_dates=["start_date", "renewal_date"])
+    drv = pd.read_csv(os.path.join(EXP, "account_drivers_shap.csv"))
+    stage = pd.read_csv(os.path.join(EXP, "open_pipeline_by_stage.csv"))
+    dwell = pd.read_csv(os.path.join(EXP, "stage_dwell.csv"))
+    score = pd.read_csv(os.path.join(EXP, "model_scorecard.csv"))
+    quint = pd.read_csv(os.path.join(EXP, "lead_quintiles.csv"))
+    comp = pd.read_csv(os.path.join(EXP, "stage_funnel_closed_deals.csv"))
+    return k, acc, drv, stage, dwell, score, quint, comp
 
-@st.cache_resource
-def load_models():
-    churn_model = joblib.load(os.path.join(MODELS_DIR, "churn_model.pkl"))
-    exp_model = joblib.load(os.path.join(MODELS_DIR, "expansion_model.pkl"))
-    with open(os.path.join(MODELS_DIR, "churn_features.json")) as f:
-        churn_cols = json.load(f)
-    with open(os.path.join(MODELS_DIR, "expansion_features.json")) as f:
-        exp_cols = json.load(f)
-    return churn_model, exp_model, churn_cols, exp_cols
 
-master, kpis, funnel, churn_feat, exp_feat = load_data()
-churn_model, exp_model, churn_cols, exp_cols = load_models()
+k, acc, drv, stage, dwell, score, quint, comp = load()
 
 st.title("Revenue Pipeline Capstone")
-st.caption("Full-funnel B2B SaaS revenue pipeline -- acquisition through retention and expansion")
+st.caption(f"Five connected models on one synthetic B2B SaaS dataset. Figures as of {k['as_of']}. "
+           "All data is simulated: dollar values illustrate the method, they are not market findings.")
 
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Total Pipeline Value", f"${kpis['total_pipeline_value']:,.0f}")
-c2.metric("Win Rate", f"{kpis['win_rate']*100:.1f}%")
-c3.metric("Bottleneck Stage Dwell", f"{kpis['avg_deal_cycle_days']:.0f} days")
-c4.metric("Churn-Risk $ Exposure", f"${kpis['churn_risk_exposure']:,.0f}")
-c5.metric("Expansion Revenue Potential", f"${kpis['expansion_revenue_potential']:,.0f}")
+# ------------------------------------------------------------------ KPIs
+st.subheader("Pipeline")
+c = st.columns(5)
+c[0].metric("Open pipeline", money(k["open_pipeline"]), f"{k['open_opportunities']} deals", delta_color="off")
+c[1].metric("Weighted pipeline", money(k["weighted_open_pipeline"]), "open value x 12-mo win rate", delta_color="off")
+c[2].metric("Win rate (12 mo)", f"{k['win_rate_12m']:.0%}")
+c[3].metric("Avg sales cycle (won)", f"{k['avg_won_cycle_days']:.0f} days")
+c[4].metric("Pipeline velocity", f"{money(k['pipeline_velocity_usd_per_day'])}/day")
 
+st.subheader("Customers")
+c = st.columns(5)
+c[0].metric("Active ARR", money(k["active_arr"]), f"{k['active_accounts']:,} customers; {k['scored_share_of_arr']:.0%} of ARR scored", delta_color="off")
+c[1].metric("Net revenue retention (12 mo)", f"{k['net_revenue_retention_12m']:.0%}",
+            f"gross {k['gross_revenue_retention_12m']:.0%}", delta_color="off")
+c[2].metric("Expected ARR loss, next 90 days", money(k["expected_arr_loss_next_90d"]),
+            f"{k['high_churn_risk_accounts']} high-risk accounts, {money(k['high_churn_risk_arr'])} ARR", delta_color="off")
+c[3].metric("Expected expansion, next 90 days", money(k["expected_expansion_arr_next_90d"]),
+            f"{k['high_expansion_accounts']} high-propensity accounts", delta_color="off")
+q = k["quadrant_counts"]
+c[4].metric("Save & grow accounts", f"{q.get('Save & grow', 0)}", "high churn risk and high expansion propensity", delta_color="off")
+
+# ------------------------------------------------------------------ funnel & velocity
 st.divider()
-st.subheader("Funnel: Leads to Closed-Won")
-stages = list(funnel.keys())
-values = list(funnel.values())
-fig, ax = plt.subplots(figsize=(10, 3))
-ax.barh(stages[::-1], values[::-1], color=COLOR_BLUE)
-for i, v in enumerate(values[::-1]):
-    ax.text(v, i, f" {v:,}", va="center", color="#0b0b0b")
-ax.set_xlabel("Count")
-ax.spines[["top", "right"]].set_visible(False)
-st.pyplot(fig)
+left, right = st.columns(2)
+with left:
+    st.markdown("**Revenue funnel**")
+    f = k["funnel"]
+    labels = ["Leads (deduplicated)", "Became opportunity", "Closed won", "Active customers today"]
+    vals = [f["leads"], f["leads_converted_to_opp"], f["opportunities_won"], f["accounts_active_now"]]
+    fig, ax = plt.subplots(figsize=(5.6, 3.2), dpi=150)
+    ax.barh(labels[::-1], vals[::-1], color=BLUE, height=0.55)
+    for i, v in enumerate(vals[::-1]):
+        ax.text(v + max(vals) * 0.01, i, f"{v:,}", va="center", fontsize=9)
+    ax.set_xlim(0, max(vals) * 1.15); ax.grid(axis="y", visible=False)
+    st.pyplot(fig, clear_figure=True)
+with right:
+    st.markdown("**Open pipeline by stage: on track vs stalled**")
+    st.caption("Stalled = already longer in its stage than 75% of comparable deals took.")
+    fig, ax = plt.subplots(figsize=(5.6, 3.2), dpi=150)
+    on_track = (stage["open_value"] - stage["stalled_value"]) / 1e6
+    stalled = stage["stalled_value"] / 1e6
+    y = np.arange(len(stage))
+    ax.barh(y, on_track, color=BLUE, height=0.55, label="On track")
+    ax.barh(y, stalled, left=on_track + 0.06, color=ORANGE, height=0.55, label="Stalled")
+    ax.set_yticks(y, stage["stage"]); ax.invert_yaxis(); ax.set_xlabel("Open deal value ($M)"); ax.grid(axis="y", visible=False)
+    ax.legend(frameon=False, fontsize=8.5, loc="lower right")
+    st.pyplot(fig, clear_figure=True)
 
-conv_lines = []
-for i in range(1, len(stages)):
-    prev, cur = values[i-1], values[i]
-    pct = (cur / prev * 100) if prev else 0
-    conv_lines.append(f"{stages[i-1]} -> {stages[i]}: {pct:.1f}%")
-st.caption(" | ".join(conv_lines))
+with st.expander("Stage timing and conversion"):
+    a, b = st.columns(2)
+    d = dwell.copy()
+    d.columns = ["Stage", "Deals measured", "Median days", "75th pct days", "Mean days"]
+    a.dataframe(d.round(1), hide_index=True, width="stretch")
+    cf = comp.copy()
+    cf["pct_of_prev"] = (cf["pct_of_prev"] * 100).round(0)
+    cf.columns = ["Stage reached (closed deals)", "Deals", "% of previous stage"]
+    b.dataframe(cf, hide_index=True, width="stretch")
 
+# ------------------------------------------------------------------ model scorecard
 st.divider()
-st.subheader("Account Health")
-col_f1, col_f2 = st.columns(2)
-tier_options = master["risk_tier"].dropna().unique().tolist()
-tier_filter = col_f1.multiselect("Risk tier", options=tier_options, default=tier_options)
-action_options = master["recommended_action"].unique().tolist()
-action_filter = col_f2.multiselect("Recommended action", options=action_options, default=action_options)
+st.subheader("Model scorecard (forward-in-time validation)")
+sc = score.copy()
+sc["ROC-AUC (95% CI)"] = [f"{r.roc_auc:.3f} ({r.roc_auc_ci_low:.3f}-{r.roc_auc_ci_high:.3f})" for r in sc.itertuples()]
+sc["Base rate"] = (sc["base_rate"] * 100).round(1).astype(str) + "%"
+sc["Top-10% lift"] = sc["top10pct_lift"].round(1).astype(str) + "x"
+sc = sc.rename(columns={"model": "Model", "target": "What it predicts", "validation": "Validation", "algorithm_deployed": "Algorithm"})
+st.dataframe(sc[["Model", "What it predicts", "Algorithm", "ROC-AUC (95% CI)", "Base rate", "Top-10% lift", "Validation"]],
+             hide_index=True, width="stretch")
+st.caption("Each model is trained only on the past and tested on the next period, with a gap so no training label overlaps the "
+           "test window. Scores are lower than random-split numbers on purpose.")
+lq = quint.copy()
+lq["conversion_rate"] = (lq["conversion_rate"] * 100).round(1).astype(str) + "%"
+lq.columns = ["Lead score band", "Leads", "Became an opportunity"]
+with st.expander("Lead scoring: conversion by score band (out-of-time)"):
+    st.dataframe(lq, hide_index=True, width="stretch")
 
-filtered = master[
-    (master["risk_tier"].isin(tier_filter) | master["risk_tier"].isna()) &
-    (master["recommended_action"].isin(action_filter))
-]
-display_cols = ["account_id", "account_tier", "mrr", "churn_probability", "risk_tier",
-                 "expansion_score", "recommended_action"]
-st.dataframe(
-    filtered[display_cols].sort_values("churn_probability", ascending=False, na_position="last"),
-    use_container_width=True, height=350
-)
-
+# ------------------------------------------------------------------ account health
 st.divider()
-st.subheader("Account Drill-Down")
-account_options = master[master["status"] == "Active"]["account_id"].tolist()
-selected = st.selectbox("Select an account", account_options)
-acc_row = master[master["account_id"] == selected].iloc[0]
-st.write(
-    f"Risk tier: {acc_row['risk_tier']} | Churn probability: {acc_row['churn_probability']:.2f} | "
-    f"Expansion score: {acc_row['expansion_score']:.2f}"
-)
-st.info(f"Recommended action: {acc_row['recommended_action']}")
+st.subheader("Account health")
+f1, f2, f3, f4 = st.columns(4)
+tiers = f1.multiselect("Plan tier", sorted(acc["account_tier"].unique()))
+regions = f2.multiselect("Region", sorted(acc["region"].unique()))
+quads = f3.multiselect("Segment", ["Protect", "Grow", "Save & grow", "Maintain"])
+churn_t = f4.multiselect("Churn risk", ["High", "Medium", "Low"])
+view = acc.copy()
+if tiers: view = view[view["account_tier"].isin(tiers)]
+if regions: view = view[view["region"].isin(regions)]
+if quads: view = view[view["quadrant"].isin(quads)]
+if churn_t: view = view[view["churn_tier"].isin(churn_t)]
+st.caption(f"{len(view):,} accounts, {money(view['arr'].sum())} ARR, expected 90-day loss {money(view['expected_arr_loss_90d'].sum())}. "
+           "Sorted by expected ARR loss.")
+show = view[["account_id", "company_name", "account_tier", "region", "industry", "arr", "months_to_renewal", "churn_prob_90d",
+             "churn_tier", "expansion_prob_90d", "expansion_tier", "quadrant"]].copy()
+show["churn_prob_90d"] *= 100; show["expansion_prob_90d"] *= 100
+st.dataframe(show, hide_index=True, width="stretch", height=360, column_config={
+    "account_id": "Account", "company_name": "Company", "account_tier": "Tier", "region": "Region", "industry": "Industry",
+    "arr": st.column_config.NumberColumn("ARR", format="$%,.0f"),
+    "months_to_renewal": st.column_config.NumberColumn("Months to renewal", format="%.1f"),
+    "churn_prob_90d": st.column_config.NumberColumn("Churn prob. (90d)", format="%.1f%%"),
+    "churn_tier": "Churn risk",
+    "expansion_prob_90d": st.column_config.NumberColumn("Expansion prob. (90d)", format="%.1f%%"),
+    "expansion_tier": "Expansion", "quadrant": "Segment"})
 
-col_a, col_b = st.columns(2)
-with col_a:
-    st.markdown("**Why this churn score?**")
-    row_feat = churn_feat[churn_feat["account_id"] == selected][churn_cols]
-    if not row_feat.empty:
-        explainer = shap.TreeExplainer(churn_model)
-        sv = explainer.shap_values(row_feat)[0]
-        top = pd.Series(sv, index=churn_cols).sort_values(key=abs, ascending=False).head(5)
-        colors = [COLOR_CRITICAL if v > 0 else COLOR_GOOD for v in top.values]
-        fig2, ax2 = plt.subplots(figsize=(5, 3))
-        ax2.barh(top.index[::-1], top.values[::-1], color=colors[::-1])
-        ax2.axvline(0, color=COLOR_MUTED, linewidth=1)
-        ax2.spines[["top", "right"]].set_visible(False)
-        st.pyplot(fig2)
-        st.caption("Red = pushes churn risk up | Green = pushes it down")
+# ------------------------------------------------------------------ drill-down
+st.divider()
+st.subheader("Account drill-down")
+options = view["account_id"].tolist() or acc["account_id"].tolist()
+labels = {r.account_id: f"{r.account_id}  {r.company_name}  ({money(r.arr)})" for r in acc.itertuples()}
+pick = st.selectbox("Account", options, format_func=lambda a: labels.get(a, a))
+r = acc[acc["account_id"] == pick].iloc[0]
+m = st.columns(5)
+m[0].metric("ARR", money(r["arr"]), f"{r['account_tier']} | {r['region']}", delta_color="off")
+m[1].metric("Churn probability (90d)", f"{r['churn_prob_90d']:.1%}", r["churn_tier"] + " risk", delta_color="off")
+m[2].metric("Expected ARR loss", money(r["expected_arr_loss_90d"]))
+m[3].metric("Expansion probability (90d)", f"{r['expansion_prob_90d']:.1%}", r["expansion_tier"] + " propensity", delta_color="off")
+m[4].metric("Segment", r["quadrant"], f"renews in {r['months_to_renewal']:.1f} months", delta_color="off")
 
-with col_b:
-    st.markdown("**Why this expansion score?**")
-    row_feat_e = exp_feat[exp_feat["account_id"] == selected][exp_cols]
-    if not row_feat_e.empty:
-        explainer_e = shap.TreeExplainer(exp_model)
-        sv_e = explainer_e.shap_values(row_feat_e)[0]
-        top_e = pd.Series(sv_e, index=exp_cols).sort_values(key=abs, ascending=False).head(5)
-        colors_e = [COLOR_BLUE if v > 0 else COLOR_MUTED for v in top_e.values]
-        fig3, ax3 = plt.subplots(figsize=(5, 3))
-        ax3.barh(top_e.index[::-1], top_e.values[::-1], color=colors_e[::-1])
-        ax3.axvline(0, color=COLOR_MUTED, linewidth=1)
-        ax3.spines[["top", "right"]].set_visible(False)
-        st.pyplot(fig3)
-        st.caption("Blue = pushes expansion score up")
+cc = st.columns(2)
+for col, model, title in [(cc[0], "churn", "Why this churn score"), (cc[1], "expansion", "Why this expansion score")]:
+    d = drv[(drv["account_id"] == pick) & (drv["model"] == model)].sort_values("rank")
+    with col:
+        st.markdown(f"**{title}**")
+        fig, ax = plt.subplots(figsize=(5.4, 2.8), dpi=150)
+        colors = [ORANGE if s > 0 else BLUE for s in d["shap"]]
+        ax.barh(d["label"][::-1], d["shap"][::-1], color=colors[::-1], height=0.55)
+        ax.axvline(0, color="#898781", lw=1)
+        ax.set_xlabel("Raises the score (orange) or lowers it (blue)"); ax.grid(axis="y", visible=False); ax.tick_params(axis="y", labelsize=8.5)
+        st.pyplot(fig, clear_figure=True)
+st.caption(f"Usage snapshot: login rate {r['login_3m']:.0%} | features adopted {r['feat_3m']:.1f} of 12 | seat utilization {r['util_3m']:.0%} | "
+           f"tickets (90d) {r['tickets_90d']:.0f} | integrations {r['integrations']:.0f}")

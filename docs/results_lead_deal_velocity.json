@@ -1,0 +1,410 @@
+{
+  "lead_scoring": {
+    "pooled": {
+      "lr": {
+        "n": 13450,
+        "positives": 4027,
+        "base_rate": 0.2994052044609665,
+        "roc_auc": 0.6675338103690991,
+        "pr_auc": 0.4671952742771765,
+        "brier": 0.19331360049242957,
+        "top10_capture": 0.19269927986093865,
+        "top10_lift": 1.9269927986093864,
+        "roc_auc_ci95": [
+          0.6578489179820044,
+          0.6768388591344056
+        ]
+      },
+      "xgb": {
+        "n": 13450,
+        "positives": 4027,
+        "base_rate": 0.2994052044609665,
+        "roc_auc": 0.667124074757933,
+        "pr_auc": 0.46651523816347706,
+        "brier": 0.19347795525982225,
+        "top10_capture": 0.19269927986093865,
+        "top10_lift": 1.9269927986093864,
+        "roc_auc_ci95": [
+          0.6577307836194832,
+          0.6762956376084472
+        ]
+      },
+      "deployed": "lr",
+      "top_vs_bottom_quintile_ratio": 3.3276283618581903,
+      "top_vs_bottom_quintile_ratio_ci95": [
+        3.04339994304158,
+        3.6788218831141184
+      ]
+    },
+    "folds": [
+      {
+        "fold": 1,
+        "test_start": "2025-04-01",
+        "test_end": "2025-06-30",
+        "n_train": 8184,
+        "train_positives": 2380,
+        "n_test": 2788,
+        "test_positives": 828,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.6562715665976535,
+        "lr_pr_auc": 0.44653311892905734,
+        "lr_brier": 0.19519376734635227,
+        "lr_top10_capture": 0.18478260869565216,
+        "lr_top10_lift": 1.8478260869565215,
+        "xgb_roc_auc": 0.6576204032337571,
+        "xgb_pr_auc": 0.4450997950935935,
+        "xgb_brier": 0.19494926491464273,
+        "xgb_top10_capture": 0.18478260869565216,
+        "xgb_top10_lift": 1.8478260869565215,
+        "base_rate": 0.296987087517934
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-07-01",
+        "test_end": "2025-09-30",
+        "n_train": 10888,
+        "train_positives": 3195,
+        "n_test": 3087,
+        "test_positives": 924,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.6747240084618725,
+        "lr_pr_auc": 0.4748745074260107,
+        "lr_brier": 0.19196180958079428,
+        "lr_top10_capture": 0.19805194805194806,
+        "lr_top10_lift": 1.9805194805194806,
+        "xgb_roc_auc": 0.672402897610942,
+        "xgb_pr_auc": 0.46832519964079444,
+        "xgb_brier": 0.19286600222219283,
+        "xgb_top10_capture": 0.19155844155844157,
+        "xgb_top10_lift": 1.9155844155844155,
+        "base_rate": 0.29931972789115646
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-10-01",
+        "test_end": "2025-12-31",
+        "n_train": 13763,
+        "train_positives": 4043,
+        "n_test": 3329,
+        "test_positives": 1032,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.6618463837226176,
+        "lr_pr_auc": 0.47702868657590747,
+        "lr_brier": 0.198245538327539,
+        "lr_top10_capture": 0.18604651162790697,
+        "lr_top10_lift": 1.8604651162790697,
+        "xgb_roc_auc": 0.6631429434415634,
+        "xgb_pr_auc": 0.48115140934371636,
+        "xgb_brier": 0.19795359190802728,
+        "xgb_top10_capture": 0.187984496124031,
+        "xgb_top10_lift": 1.87984496124031,
+        "base_rate": 0.3100030039050766
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-01",
+        "test_end": "2026-04-16",
+        "n_train": 16878,
+        "train_positives": 4998,
+        "n_test": 4246,
+        "test_positives": 1243,
+        "xgb_params": "depth=2,trees=300",
+        "lr_roc_auc": 0.6747532435384407,
+        "lr_pr_auc": 0.4708523774040017,
+        "lr_brier": 0.18919505416704144,
+        "lr_top10_capture": 0.2003218020917136,
+        "lr_top10_lift": 2.003218020917136,
+        "xgb_roc_auc": 0.6734828593235672,
+        "xgb_pr_auc": 0.4710183141830998,
+        "xgb_brier": 0.18944773700915052,
+        "xgb_top10_capture": 0.2003218020917136,
+        "xgb_top10_lift": 2.003218020917136,
+        "base_rate": 0.2927461139896373
+      }
+    ],
+    "top_drivers": [
+      "lead_source",
+      "contact_seniority",
+      "engagement_score",
+      "demo_requested",
+      "industry",
+      "log_employees"
+    ],
+    "n_leads": 23847,
+    "conversion_rate": 0.29668302092506393
+  },
+  "deal_win": {
+    "pooled": {
+      "lr": {
+        "n": 3932,
+        "positives": 1366,
+        "base_rate": 0.3474059003051882,
+        "roc_auc": 0.6521361674059586,
+        "pr_auc": 0.4986498733972806,
+        "brier": 0.21198863612498656,
+        "top10_capture": 0.16471449487554904,
+        "top10_lift": 1.6471449487554903,
+        "roc_auc_ci95": [
+          0.6354370289421781,
+          0.6737279188566057
+        ]
+      },
+      "xgb": {
+        "n": 3932,
+        "positives": 1366,
+        "base_rate": 0.3474059003051882,
+        "roc_auc": 0.6490380171381817,
+        "pr_auc": 0.4894935509726914,
+        "brier": 0.21257423294126093,
+        "top10_capture": 0.1705710102489019,
+        "top10_lift": 1.7057101024890189,
+        "roc_auc_ci95": [
+          0.6320297646130013,
+          0.6695665593217781
+        ]
+      },
+      "rep_forecast": {
+        "roc_auc": 0.6429043193058158,
+        "n": 3452,
+        "coverage": 0.8779247202441506
+      },
+      "deployed": "lr",
+      "model_plus_rep_forecast_xgb_roc_auc": 0.6766907093436069
+    },
+    "folds": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-01",
+        "test_end": "2025-09-30",
+        "n_train": 3203,
+        "train_positives": 1054,
+        "n_test": 865,
+        "test_positives": 308,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.6483830352771107,
+        "lr_pr_auc": 0.49916084192192633,
+        "lr_brier": 0.21608273920596618,
+        "lr_top10_capture": 0.14935064935064934,
+        "lr_top10_lift": 1.4935064935064934,
+        "xgb_roc_auc": 0.6439646529413137,
+        "xgb_pr_auc": 0.4854632744042495,
+        "xgb_brier": 0.2163333068194448,
+        "xgb_top10_capture": 0.1590909090909091,
+        "xgb_top10_lift": 1.5909090909090908,
+        "base_rate": 0.3560693641618497,
+        "rep_forecast_roc_auc": 0.6522835920244471
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-10-01",
+        "test_end": "2025-12-31",
+        "n_train": 4068,
+        "train_positives": 1362,
+        "n_test": 958,
+        "test_positives": 307,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.6878368033143698,
+        "lr_pr_auc": 0.5281934834143038,
+        "lr_brier": 0.19582792832498372,
+        "lr_top10_capture": 0.1986970684039088,
+        "lr_top10_lift": 1.986970684039088,
+        "xgb_roc_auc": 0.6806016301655684,
+        "xgb_pr_auc": 0.5133675011820205,
+        "xgb_brier": 0.19824899775458787,
+        "xgb_top10_capture": 0.18566775244299674,
+        "xgb_top10_lift": 1.8566775244299674,
+        "base_rate": 0.32045929018789143,
+        "rep_forecast_roc_auc": 0.6544923493888721
+      },
+      {
+        "fold": 3,
+        "test_start": "2026-01-01",
+        "test_end": "2026-03-31",
+        "n_train": 5026,
+        "train_positives": 1669,
+        "n_test": 1016,
+        "test_positives": 359,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.6460869233410922,
+        "lr_pr_auc": 0.4952897763137922,
+        "lr_brier": 0.21549746967977504,
+        "lr_top10_capture": 0.16991643454038996,
+        "lr_top10_lift": 1.6991643454038996,
+        "xgb_roc_auc": 0.6491225838728415,
+        "xgb_pr_auc": 0.49266585928806067,
+        "xgb_brier": 0.2148191936267444,
+        "xgb_top10_capture": 0.18384401114206128,
+        "xgb_top10_lift": 1.8384401114206128,
+        "base_rate": 0.35334645669291337,
+        "rep_forecast_roc_auc": 0.6088348271446862
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-04-01",
+        "test_end": "2026-06-30",
+        "n_train": 6042,
+        "train_positives": 2028,
+        "n_test": 1093,
+        "test_positives": 392,
+        "xgb_params": "depth=2,trees=150",
+        "lr_roc_auc": 0.631302949139713,
+        "lr_pr_auc": 0.4821073928633748,
+        "lr_brier": 0.2196515675208606,
+        "lr_top10_capture": 0.14030612244897958,
+        "lr_top10_lift": 1.4030612244897958,
+        "xgb_roc_auc": 0.6255767999068387,
+        "xgb_pr_auc": 0.4781673961352648,
+        "xgb_brier": 0.22006837415603908,
+        "xgb_top10_capture": 0.14540816326530612,
+        "xgb_top10_lift": 1.454081632653061,
+        "base_rate": 0.3586459286367795,
+        "rep_forecast_roc_auc": 0.6596215780998391
+      }
+    ],
+    "top_drivers": [
+      "competitor_present",
+      "log_deal_size",
+      "sales_rep_id",
+      "decision_makers_engaged",
+      "engagement_score",
+      "region"
+    ],
+    "win_rate_closed": 0.33903054076772204,
+    "n_closed": 7138,
+    "win_rate_by_competitor": {
+      "no competitor": {
+        "win_rate": 0.40857565303104976,
+        "deals": 4058
+      },
+      "competitor present": {
+        "win_rate": 0.2474025974025974,
+        "deals": 3080
+      }
+    }
+  },
+  "pipeline_velocity": {
+    "dwell": [
+      {
+        "stage": "Qualified",
+        "deals_measured": 6467,
+        "median_days": 19.0,
+        "p75_days": 29.0,
+        "mean_days": 22.754600278336166
+      },
+      {
+        "stage": "Discovery",
+        "deals_measured": 4848,
+        "median_days": 16.0,
+        "p75_days": 23.0,
+        "mean_days": 19.084983498349835
+      },
+      {
+        "stage": "Proposal",
+        "deals_measured": 3135,
+        "median_days": 19.0,
+        "p75_days": 29.0,
+        "mean_days": 22.7170653907496
+      },
+      {
+        "stage": "Negotiation",
+        "deals_measured": 2998,
+        "median_days": 12.0,
+        "p75_days": 17.0,
+        "mean_days": 13.557371581054037
+      }
+    ],
+    "open_by_stage": [
+      {
+        "stage": "Qualified",
+        "open_deals": 301,
+        "open_value": 13291550.0,
+        "stalled_deals": 39,
+        "stalled_value": 2363600.0,
+        "stalled_share_of_stage_value": 0.17782726619543995
+      },
+      {
+        "stage": "Discovery",
+        "open_deals": 197,
+        "open_value": 8717050.0,
+        "stalled_deals": 25,
+        "stalled_value": 1577900.0,
+        "stalled_share_of_stage_value": 0.18101307208287207
+      },
+      {
+        "stage": "Proposal",
+        "open_deals": 178,
+        "open_value": 7965700.0,
+        "stalled_deals": 22,
+        "stalled_value": 1768400.0,
+        "stalled_share_of_stage_value": 0.2220018328583803
+      },
+      {
+        "stage": "Negotiation",
+        "open_deals": 72,
+        "open_value": 2254850.0,
+        "stalled_deals": 11,
+        "stalled_value": 651300.0,
+        "stalled_share_of_stage_value": 0.288844047275872
+      }
+    ],
+    "open_deals": 748,
+    "open_value": 32229150.0,
+    "stalled_value": 6361200.0,
+    "stalled_rule": "days in current stage > 75th percentile of that stage's completed dwell times",
+    "funnel_closed_deals": [
+      {
+        "stage": "Qualified",
+        "closed_deals_reaching": 7138,
+        "pct_of_prev": NaN
+      },
+      {
+        "stage": "Discovery",
+        "closed_deals_reaching": 6020,
+        "pct_of_prev": 0.8433734939759037
+      },
+      {
+        "stage": "Proposal",
+        "closed_deals_reaching": 4598,
+        "pct_of_prev": 0.7637873754152824
+      },
+      {
+        "stage": "Negotiation",
+        "closed_deals_reaching": 3063,
+        "pct_of_prev": 0.6661591996520226
+      },
+      {
+        "stage": "Closed Won",
+        "closed_deals_reaching": 2420,
+        "pct_of_prev": 0.7900750897812602
+      }
+    ],
+    "early_speed_vs_win": [
+      {
+        "speed_tercile": "fastest third",
+        "deals": 1609,
+        "win_rate": 0.5363579863269111,
+        "ci95_halfwidth": 0.0243667056361119
+      },
+      {
+        "speed_tercile": "middle third",
+        "deals": 1545,
+        "win_rate": 0.5326860841423948,
+        "ci95_halfwidth": 0.024878939391709147
+      },
+      {
+        "speed_tercile": "slowest third",
+        "deals": 1444,
+        "win_rate": 0.5083102493074793,
+        "ci95_halfwidth": 0.025785911383512737
+      }
+    ],
+    "formula_inputs": {
+      "open_opportunities": 748,
+      "avg_open_deal_size": 43087.09893048128,
+      "win_rate_12m": 0.3474059003051882,
+      "avg_won_cycle_days": 77.6207906295754,
+      "weighted_open_pipeline": 11196596.871820956,
+      "pipeline_velocity_usd_per_day": 144247.39533063688
+    }
+  }
+}

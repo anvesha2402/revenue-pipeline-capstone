@@ -1,0 +1,9 @@
+feature,mean_abs_shap
+lead_source,0.27355847
+contact_seniority,0.27106738
+engagement_score,0.22954331
+demo_requested,0.22731708
+industry,0.15256546
+log_employees,0.06376554
+size_band,0.05901457
+region,0.027050603
