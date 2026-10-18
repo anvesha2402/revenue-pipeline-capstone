@@ -1,0 +1,8 @@
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_opportunity.csv"), [Delimiter = ",", Columns = 20, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"opportunity_id", type text}, {"created_date", type date}, {"closed_date", type date}, {"region_key", Int64.Type}, {"industry_key", Int64.Type}, {"rep_key", Int64.Type}, {"stage_key", Int64.Type}, {"outcome", type text}, {"deal_size", type number}, {"discount_pct", type number}, {"competitor", type text}, {"decision_makers_engaged", type number}, {"rep_forecast_pct", type number}, {"loss_reason", type text}, {"days_in_stage", type number}, {"stage_p75_days", type number}, {"is_stalled", Int64.Type}, {"sales_cycle_days", type number}, {"model_win_prob", type number}, {"deal_label", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"opportunity_id", "Opportunity ID"}, {"created_date", "Created Date"}, {"closed_date", "Closed Date"}, {"region_key", "Region Key"}, {"industry_key", "Industry Key"}, {"rep_key", "Rep Key"}, {"stage_key", "Stage Key"}, {"outcome", "Outcome"}, {"deal_size", "Deal Size"}, {"discount_pct", "Discount Pct"}, {"competitor", "Competitor"}, {"decision_makers_engaged", "Decision Makers Engaged"}, {"rep_forecast_pct", "Rep Forecast Pct"}, {"loss_reason", "Loss Reason"}, {"days_in_stage", "Days in Stage"}, {"stage_p75_days", "Stage 75th Pctl Days"}, {"is_stalled", "Is Stalled"}, {"sales_cycle_days", "Sales Cycle Days"}, {"model_win_prob", "Model Win Probability"}, {"deal_label", "Deal Label"}})
+in
+    Renamed

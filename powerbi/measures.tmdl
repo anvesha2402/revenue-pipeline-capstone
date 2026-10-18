@@ -1,0 +1,516 @@
+createOrReplace
+
+	ref table _Measures
+
+		/// The reporting date: the latest date in the date table (30 Jun 2026). Every 'last 12 months' measure counts back from it.
+		measure 'As Of Date' = CALCULATE(MAX(dim_date[Date]), REMOVEFILTERS(dim_date))
+			formatString: dd mmm yyyy
+			displayFolder: 0 Helpers
+
+		/// Total value of deals that are still open (not yet won or lost).
+		measure 'Open Pipeline' = CALCULATE(SUM(fact_opportunity[Deal Size]), fact_opportunity[Outcome] = "Open")
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Number of deals that are still open.
+		measure 'Open Deals' = CALCULATE(COUNTROWS(fact_opportunity), fact_opportunity[Outcome] = "Open")
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Average value of an open deal.
+		measure 'Avg Open Deal Size' = DIVIDE([Open Pipeline], [Open Deals])
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Deals won in the 12 months up to the reporting date.
+		measure 'Won Deals 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EDATE(AsOf, -12)
+				RETURN
+				CALCULATE(
+					COUNTROWS(fact_opportunity),
+					fact_opportunity[Outcome] = "Won",
+					fact_opportunity[Closed Date] > StartDate,
+					fact_opportunity[Closed Date] <= AsOf
+				)
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Deals won or lost in the 12 months up to the reporting date.
+		measure 'Closed Deals 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EDATE(AsOf, -12)
+				RETURN
+				CALCULATE(
+					COUNTROWS(fact_opportunity),
+					fact_opportunity[Outcome] IN {"Won", "Lost"},
+					fact_opportunity[Closed Date] > StartDate,
+					fact_opportunity[Closed Date] <= AsOf
+				)
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Of the deals that closed in the last 12 months, the share that were won.
+		measure 'Win Rate 12M' = DIVIDE([Won Deals 12M], [Closed Deals 12M])
+			formatString: 0.0%
+			displayFolder: 1 Pipeline
+
+		/// Average number of days from deal creation to close, for deals won in the last 12 months.
+		measure 'Avg Sales Cycle Days' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EDATE(AsOf, -12)
+				RETURN
+				CALCULATE(
+					AVERAGE(fact_opportunity[Sales Cycle Days]),
+					fact_opportunity[Outcome] = "Won",
+					fact_opportunity[Closed Date] > StartDate,
+					fact_opportunity[Closed Date] <= AsOf
+				)
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Dollars of new business the pipeline is expected to produce per day: open deals x average deal size x win rate / sales cycle days.
+		measure 'Pipeline Velocity per Day' = DIVIDE([Open Deals] * [Avg Open Deal Size] * [Win Rate 12M], [Avg Sales Cycle Days])
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Open pipeline multiplied by the overall 12-month win rate (every deal gets the same probability).
+		measure 'Weighted Pipeline Flat' = [Open Pipeline] * [Win Rate 12M]
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Open pipeline where each deal is multiplied by the deal-win model's own probability for that deal.
+		measure 'Weighted Pipeline Model' =
+				SUMX(
+					FILTER(fact_opportunity, fact_opportunity[Outcome] = "Open"),
+					fact_opportunity[Deal Size] * fact_opportunity[Model Win Probability]
+				)
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Value of open deals that have sat in their current stage longer than 75% of comparable deals did.
+		measure 'Stalled Pipeline' = CALCULATE(SUM(fact_opportunity[Deal Size]), fact_opportunity[Outcome] = "Open", fact_opportunity[Is Stalled] = 1)
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Number of stalled open deals.
+		measure 'Stalled Deals' = CALCULATE(COUNTROWS(fact_opportunity), fact_opportunity[Outcome] = "Open", fact_opportunity[Is Stalled] = 1)
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Open pipeline that is not stalled.
+		measure 'On Track Pipeline' = [Open Pipeline] - COALESCE([Stalled Pipeline], 0)
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Stalled pipeline as a share of open pipeline.
+		measure 'Stalled Share' = DIVIDE(COALESCE([Stalled Pipeline], 0), [Open Pipeline])
+			formatString: 0.0%
+			displayFolder: 1 Pipeline
+
+		/// Win rate across all deals ever closed in the current filter (used for rep and competitor comparisons).
+		measure 'Win Rate All Closed' =
+				DIVIDE(
+					CALCULATE(COUNTROWS(fact_opportunity), fact_opportunity[Outcome] = "Won"),
+					CALCULATE(COUNTROWS(fact_opportunity), fact_opportunity[Outcome] IN {"Won", "Lost"})
+				)
+			formatString: 0.0%
+			displayFolder: 1 Pipeline
+
+		/// Number of deals ever closed (won or lost) in the current filter.
+		measure 'Closed Deals All' = CALCULATE(COUNTROWS(fact_opportunity), fact_opportunity[Outcome] IN {"Won", "Lost"})
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Average value of won deals.
+		measure 'Avg Won Deal Size' = CALCULATE(AVERAGE(fact_opportunity[Deal Size]), fact_opportunity[Outcome] = "Won")
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// New annual recurring revenue from customers who signed in the period.
+		measure 'New ARR Booked' = SUM(fact_arr_monthly[New ARR])
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// The model's win probability for the deal(s) in the current row.
+		measure 'Deal Model Probability' = AVERAGE(fact_opportunity[Model Win Probability])
+			formatString: 0.0%
+			displayFolder: 1 Pipeline
+
+		/// The sales rep's own win-probability forecast for the deal(s) in the current row.
+		measure 'Deal Rep Forecast' = AVERAGE(fact_opportunity[Rep Forecast Pct])
+			formatString: 0\%
+			displayFolder: 1 Pipeline
+
+		/// Days the deal has been in its current stage.
+		measure 'Deal Days in Stage' = AVERAGE(fact_opportunity[Days in Stage])
+			formatString: #,0
+			displayFolder: 1 Pipeline
+
+		/// Value of the deal(s) in the current row.
+		measure 'Deal Value' = SUM(fact_opportunity[Deal Size])
+			formatString: \$#,0
+			displayFolder: 1 Pipeline
+
+		/// Number of leads created.
+		measure 'Leads' = COUNTROWS(fact_lead)
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Leads that became a sales opportunity.
+		measure 'Opportunities' = SUM(fact_lead[Became Opportunity])
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Leads whose deal reached the Discovery stage or later.
+		measure 'Reached Discovery' = SUM(fact_lead[Reached Discovery])
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Leads whose deal reached the Proposal stage or later.
+		measure 'Reached Proposal' = SUM(fact_lead[Reached Proposal])
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Leads whose deal reached the Negotiation stage or later.
+		measure 'Reached Negotiation' = SUM(fact_lead[Reached Negotiation])
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Leads whose deal was won.
+		measure 'Closed Won Leads' = SUM(fact_lead[Closed Won])
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Picks the right count for each funnel step (the funnel chart uses the ref_funnel table as its categories).
+		measure 'Funnel Value' =
+				SWITCH(
+					SELECTEDVALUE(ref_funnel[Step]),
+					"Leads", [Leads],
+					"Became an opportunity", [Opportunities],
+					"Reached Discovery", [Reached Discovery],
+					"Reached Proposal", [Reached Proposal],
+					"Reached Negotiation", [Reached Negotiation],
+					"Closed won", [Closed Won Leads]
+				)
+			formatString: #,0
+			displayFolder: 2 Funnel
+
+		/// Share of leads that became an opportunity.
+		measure 'Lead to Opportunity Rate' = DIVIDE([Opportunities], [Leads])
+			formatString: 0.0%
+			displayFolder: 2 Funnel
+
+		/// Share of leads that ended as a won deal.
+		measure 'Lead to Won Rate' = DIVIDE([Closed Won Leads], [Leads])
+			formatString: 0.0%
+			displayFolder: 2 Funnel
+
+		/// Share of leads in each lead-score band that became opportunities (out-of-time test, fixed numbers).
+		measure 'Conversion by Score Band' = AVERAGE(ref_lead_bands[Conversion Rate])
+			formatString: 0.0%
+			displayFolder: 2 Funnel
+
+		/// Annual recurring revenue at the end of the period shown (for a single month, that month's end; for a card, the latest month).
+		measure 'ARR' = CALCULATE(SUM(fact_arr_monthly[ARR End]), LASTNONBLANK(dim_date[Date], CALCULATE(COUNTROWS(fact_arr_monthly))))
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// Number of customers with revenue at the end of the period shown.
+		measure 'Customers' = CALCULATE(DISTINCTCOUNT(fact_arr_monthly[Account ID]), fact_arr_monthly[ARR End] > 0, LASTNONBLANK(dim_date[Date], CALCULATE(COUNTROWS(fact_arr_monthly))))
+			formatString: #,0
+			displayFolder: 3 Revenue and retention
+
+		/// ARR at the same date one year before the reporting date.
+		measure 'ARR 12M Ago' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				RETURN
+				CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = StartDate)
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// ARR added by new customers in the last 12 months.
+		measure 'New ARR 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				RETURN
+				CALCULATE(SUM(fact_arr_monthly[New ARR]), REMOVEFILTERS(dim_date), dim_date[Date] > StartDate, dim_date[Date] <= AsOf)
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// ARR added by existing customers (extra seats, upgrades, add-ons) in the last 12 months.
+		measure 'Expansion ARR 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				RETURN
+				CALCULATE(SUM(fact_arr_monthly[Expansion ARR]), REMOVEFILTERS(dim_date), dim_date[Date] > StartDate, dim_date[Date] <= AsOf)
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// ARR lost to existing customers downgrading in the last 12 months (shown as a negative number).
+		measure 'Contraction ARR 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				RETURN
+				CALCULATE(SUM(fact_arr_monthly[Contraction ARR]), REMOVEFILTERS(dim_date), dim_date[Date] > StartDate, dim_date[Date] <= AsOf)
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// ARR lost to customers who cancelled in the last 12 months (shown as a negative number).
+		measure 'Churned ARR 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				RETURN
+				CALCULATE(SUM(fact_arr_monthly[Churn ARR]), REMOVEFILTERS(dim_date), dim_date[Date] > StartDate, dim_date[Date] <= AsOf)
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// Feeds the ARR bridge (waterfall) chart: returns the right amount for each bridge step.
+		measure 'Bridge Value' =
+				SWITCH(
+					SELECTEDVALUE(ref_bridge[Step]),
+					"Starting ARR (12 months ago)", [ARR 12M Ago],
+					"New customers", [New ARR 12M],
+					"Expansion", [Expansion ARR 12M],
+					"Contraction", [Contraction ARR 12M],
+					"Churn", [Churned ARR 12M]
+				)
+			formatString: \$#,0
+			displayFolder: 3 Revenue and retention
+
+		/// Of the revenue we had from customers 12 months ago, how much do those same customers pay now (includes upgrades, downgrades and cancellations)? Above 100% means growth from existing customers.
+		measure 'Net Revenue Retention 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				VAR Tbl =
+					ADDCOLUMNS(
+						VALUES(dim_account[Account ID]),
+						"@Start", CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = StartDate),
+						"@Now",   CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = AsOf)
+					)
+				VAR Cohort = FILTER(Tbl, [@Start] > 0)
+				RETURN
+				DIVIDE(SUMX(Cohort, [@Now]), SUMX(Cohort, [@Start]))
+			formatString: 0.0%
+			displayFolder: 3 Revenue and retention
+
+		/// Same cohort, but upgrades are ignored: how much of the old revenue did we keep? Can never exceed 100%.
+		measure 'Gross Revenue Retention 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				VAR Tbl =
+					ADDCOLUMNS(
+						VALUES(dim_account[Account ID]),
+						"@Start", CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = StartDate),
+						"@Now",   CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = AsOf)
+					)
+				VAR Cohort = FILTER(Tbl, [@Start] > 0)
+				RETURN
+				DIVIDE(SUMX(Cohort, MIN([@Now], [@Start])), SUMX(Cohort, [@Start]))
+			formatString: 0.0%
+			displayFolder: 3 Revenue and retention
+
+		/// Of the customers we had 12 months ago, the share still customers today.
+		measure 'Logo Retention 12M' =
+				VAR AsOf = [As Of Date]
+				VAR StartDate = EOMONTH(AsOf, -12)
+				VAR Tbl =
+					ADDCOLUMNS(
+						VALUES(dim_account[Account ID]),
+						"@Start", CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = StartDate),
+						"@Now",   CALCULATE(SUM(fact_arr_monthly[ARR End]), REMOVEFILTERS(dim_date), dim_date[Date] = AsOf)
+					)
+				VAR Cohort = FILTER(Tbl, [@Start] > 0)
+				RETURN
+				DIVIDE(COUNTROWS(FILTER(Cohort, [@Now] > 0)), COUNTROWS(Cohort))
+			formatString: 0.0%
+			displayFolder: 3 Revenue and retention
+
+		/// Change in ARR compared with 12 months ago.
+		measure 'ARR Growth 12M' = DIVIDE([ARR] - [ARR 12M Ago], [ARR 12M Ago])
+			formatString: 0.0%
+			displayFolder: 3 Revenue and retention
+
+		/// Sum over customers of (probability of cancelling in the next 90 days x that customer's ARR). The model's estimate of revenue likely to leave.
+		measure 'Expected ARR Loss 90D' = SUM(fact_account_health[Expected ARR Loss])
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// Sum over customers of (probability of buying more in the next 90 days x expected extra ARR).
+		measure 'Expected Expansion 90D' = SUM(fact_account_health[Expected Expansion ARR])
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// ARR of customers the models have scored (customers need at least 3 months of history).
+		measure 'Scored ARR' = SUM(fact_account_health[Scored ARR])
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// Share of today's ARR that the models cover.
+		measure 'Scored Share of ARR' = DIVIDE([Scored ARR], [ARR])
+			formatString: 0%
+			displayFolder: 4 Risk and growth
+
+		/// Number of active customers the models have scored.
+		measure 'Scored Accounts' = CALCULATE(COUNTROWS(fact_account_health), fact_account_health[Is Scored] = 1)
+			formatString: #,0
+			displayFolder: 4 Risk and growth
+
+		/// Number of customers in the High churn-risk tier (at least 2x the average churn rate).
+		measure 'High Churn Risk Accounts' = CALCULATE(COUNTROWS(fact_account_health), dim_account[Churn Risk] = "High")
+			formatString: #,0
+			displayFolder: 4 Risk and growth
+
+		/// ARR sitting in High churn-risk customers.
+		measure 'High Churn Risk ARR' = CALCULATE(SUM(fact_account_health[ARR Now]), dim_account[Churn Risk] = "High")
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// Number of customers in the High expansion-potential tier.
+		measure 'High Expansion Accounts' = CALCULATE(COUNTROWS(fact_account_health), dim_account[Expansion Potential] = "High")
+			formatString: #,0
+			displayFolder: 4 Risk and growth
+
+		/// ARR sitting in High expansion-potential customers.
+		measure 'High Expansion ARR' = CALCULATE(SUM(fact_account_health[ARR Now]), dim_account[Expansion Potential] = "High")
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// ARR on contracts that come up for renewal within the next 90 days.
+		measure 'ARR Renewing Next 90D' = CALCULATE(SUM(fact_account_health[ARR Now]), fact_account_health[Renews Within 90D] = 1)
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// Expected 90-day loss as a share of scored ARR.
+		measure 'Expected Loss Share of Scored ARR' = DIVIDE([Expected ARR Loss 90D], [Scored ARR])
+			formatString: 0.0%
+			displayFolder: 4 Risk and growth
+
+		/// Average probability of cancelling in the next 90 days (for one customer: that customer's probability).
+		measure 'Avg Churn Probability' = AVERAGE(fact_account_health[Churn Probability])
+			formatString: 0.0%
+			displayFolder: 4 Risk and growth
+
+		/// Average probability of buying more in the next 90 days.
+		measure 'Avg Expansion Probability' = AVERAGE(fact_account_health[Expansion Probability])
+			formatString: 0.0%
+			displayFolder: 4 Risk and growth
+
+		/// Average months until the contract renews.
+		measure 'Avg Months to Renewal' = AVERAGE(fact_account_health[Months to Renewal])
+			formatString: 0.0
+			displayFolder: 4 Risk and growth
+
+		/// Current ARR of the customer(s) in the row.
+		measure 'Account ARR Now' = SUM(fact_account_health[ARR Now])
+			formatString: \$#,0
+			displayFolder: 4 Risk and growth
+
+		/// How strongly one factor pushes the selected customer's score up (positive) or down (negative). Blank unless exactly one customer is selected.
+		measure 'Driver Impact' = IF(HASONEVALUE(dim_account[Account ID]), SUM(fact_driver[Impact]), BLANK())
+			formatString: 0.00
+			displayFolder: 4 Risk and growth
+
+		/// How well the churn model separates customers who cancel from those who stay in a forward-in-time test (0.5 = coin toss, 1.0 = perfect).
+		measure 'Churn Model AUC' = CALCULATE(MAX(ref_model_scorecard[ROC AUC]), ref_model_scorecard[Model Name] = "Churn (90-day)")
+			formatString: 0.00
+			displayFolder: 5 Model reliability
+
+		/// Same measure for the expansion model.
+		measure 'Expansion Model AUC' = CALCULATE(MAX(ref_model_scorecard[ROC AUC]), ref_model_scorecard[Model Name] = "Expansion (90-day)")
+			formatString: 0.00
+			displayFolder: 5 Model reliability
+
+		/// Same measure for the deal-win model.
+		measure 'Deal Win Model AUC' = CALCULATE(MAX(ref_model_scorecard[ROC AUC]), ref_model_scorecard[Model Name] = "Deal-win")
+			formatString: 0.00
+			displayFolder: 5 Model reliability
+
+		/// How many times more likely the top-scored fifth of leads is to convert than the bottom-scored fifth.
+		measure 'Lead Score Lift' =
+				DIVIDE(
+					CALCULATE(MAX(ref_lead_bands[Conversion Rate]), ref_lead_bands[Band Order] = 1),
+					CALCULATE(MAX(ref_lead_bands[Conversion Rate]), ref_lead_bands[Band Order] = 5)
+				)
+			formatString: 0.0\x
+			displayFolder: 5 Model reliability
+
+		/// Text for the header: 'As of 30 Jun 2026'.
+		measure 'As Of Label' = "As of " & FORMAT([As Of Date], "dd mmm yyyy") & "  |  synthetic data"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Open Pipeline card.
+		measure 'Label Open Pipeline' = FORMAT([Open Deals], "#,0") & " open deals"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Weighted Pipeline card.
+		measure 'Label Weighted Pipeline' = "flat win rate: " & FORMAT([Weighted Pipeline Flat] / 1000000, "$0.0") & "M"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Win Rate card.
+		measure 'Label Win Rate' = FORMAT([Won Deals 12M], "#,0") & " won of " & FORMAT([Closed Deals 12M], "#,0") & " closed"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Sales Cycle card.
+		measure 'Label Cycle' = "won deals, last 12 months"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Velocity card.
+		measure 'Label Velocity' = "new ARR the pipeline should produce"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Stalled card.
+		measure 'Label Stalled' = FORMAT([Stalled Share], "0%") & " of open pipeline, " & FORMAT([Stalled Deals], "#,0") & " deals"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the ARR card.
+		measure 'Label ARR' = FORMAT([Customers], "#,0") & " customers"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the NRR card.
+		measure 'Label NRR' = "existing customers, 12 months"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the GRR card.
+		measure 'Label GRR' = "before upgrades, 12 months"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the logo retention card.
+		measure 'Label Logo' = "customers kept, 12 months"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Expected ARR Loss card.
+		measure 'Label Expected Loss' = FORMAT([High Churn Risk Accounts], "#,0") & " high-risk accounts, " & FORMAT([High Churn Risk ARR] / 1000000, "$0.0") & "M ARR"
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title under the Expected Expansion card.
+		measure 'Label Expected Expansion' = FORMAT([High Expansion Accounts], "#,0") & " high-potential accounts"
+			displayFolder: 6 Labels and colours
+
+		/// Footnote on how much ARR the models cover.
+		measure 'Label Coverage' = FORMAT([Scored Share of ARR], "0%") & " of ARR is scored (customers under 3 months old are not)"
+			displayFolder: 6 Labels and colours
+
+		/// Header note on page 1: how much to trust the model scores.
+		measure 'Reliability Pipeline' = "Model check (tested on future data): deal-win AUC " & FORMAT([Deal Win Model AUC], "0.00") & "  |  top lead band converts " & FORMAT([Lead Score Lift], "0.0") & "x the bottom band"
+			displayFolder: 6 Labels and colours
+
+		/// Header note on page 2: how much to trust the model scores.
+		measure 'Reliability Customers' = "Model check (tested on future data): churn AUC " & FORMAT([Churn Model AUC], "0.00") & "  |  expansion AUC " & FORMAT([Expansion Model AUC], "0.00")
+			displayFolder: 6 Labels and colours
+
+		/// Sub-title for the driver charts: tells the viewer to select a customer, or names the selected one.
+		measure 'Driver Hint' = IF(HASONEVALUE(dim_account[Account ID]), "Drivers for " & SELECTEDVALUE(dim_account[Customer]), "Click a customer in the table")
+			displayFolder: 6 Labels and colours
+
+		/// Hex colour for the churn-risk text in the table (red / amber / green).
+		measure 'Churn Risk Color' =
+				SWITCH(
+					SELECTEDVALUE(dim_account[Churn Risk]),
+					"High", "#D03B3B",
+					"Medium", "#C98500",
+					"Low", "#0A8A0A",
+					"#898781"
+				)
+			displayFolder: 6 Labels and colours

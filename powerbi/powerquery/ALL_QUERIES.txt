@@ -1,0 +1,149 @@
+//////// QUERY NAME: dim_date
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "dim_date.csv"), [Delimiter = ",", Columns = 11, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"date", type date}, {"year", Int64.Type}, {"quarter", type text}, {"year_quarter", type text}, {"month_number", Int64.Type}, {"month_name", type text}, {"month_label", type text}, {"year_month_sort", Int64.Type}, {"month_start", type date}, {"month_end", type date}, {"is_month_end", Int64.Type}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"date", "Date"}, {"year", "Year"}, {"quarter", "Quarter"}, {"year_quarter", "Year Quarter"}, {"month_number", "Month Number"}, {"month_name", "Month"}, {"month_label", "Month Label"}, {"year_month_sort", "Month Sort"}, {"month_start", "Month Start"}, {"month_end", "Month End"}, {"is_month_end", "Is Month End"}})
+in
+    Renamed
+
+//////// QUERY NAME: dim_region
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "dim_region.csv"), [Delimiter = ",", Columns = 2, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"region_key", Int64.Type}, {"region", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"region_key", "Region Key"}, {"region", "Region"}})
+in
+    Renamed
+
+//////// QUERY NAME: dim_industry
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "dim_industry.csv"), [Delimiter = ",", Columns = 2, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"industry_key", Int64.Type}, {"industry", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"industry_key", "Industry Key"}, {"industry", "Industry"}})
+in
+    Renamed
+
+//////// QUERY NAME: dim_rep
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "dim_rep.csv"), [Delimiter = ",", Columns = 2, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"rep_key", Int64.Type}, {"sales_rep", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"rep_key", "Rep Key"}, {"sales_rep", "Sales Rep"}})
+in
+    Renamed
+
+//////// QUERY NAME: dim_stage
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "dim_stage.csv"), [Delimiter = ",", Columns = 4, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"stage_key", Int64.Type}, {"stage", type text}, {"stage_order", Int64.Type}, {"stage_group", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"stage_key", "Stage Key"}, {"stage", "Stage"}, {"stage_order", "Stage Order"}, {"stage_group", "Stage Group"}})
+in
+    Renamed
+
+//////// QUERY NAME: dim_account
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "dim_account.csv"), [Delimiter = ",", Columns = 17, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"account_id", type text}, {"company_name", type text}, {"customer_label", type text}, {"account_tier", type text}, {"tier_order", Int64.Type}, {"size_band", type text}, {"csm_id", type text}, {"customer_since", type date}, {"customer_status", type text}, {"churn_date", type date}, {"churn_reason", type text}, {"segment", type text}, {"segment_order", Int64.Type}, {"churn_risk", type text}, {"expansion_potential", type text}, {"region_key", Int64.Type}, {"industry_key", Int64.Type}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"account_id", "Account ID"}, {"company_name", "Company"}, {"customer_label", "Customer"}, {"account_tier", "Plan Tier"}, {"tier_order", "Plan Tier Order"}, {"size_band", "Company Size"}, {"csm_id", "CSM"}, {"customer_since", "Customer Since"}, {"customer_status", "Customer Status"}, {"churn_date", "Churn Date"}, {"churn_reason", "Churn Reason"}, {"segment", "Segment"}, {"segment_order", "Segment Order"}, {"churn_risk", "Churn Risk"}, {"expansion_potential", "Expansion Potential"}, {"region_key", "Region Key"}, {"industry_key", "Industry Key"}})
+in
+    Renamed
+
+//////// QUERY NAME: fact_arr_monthly
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_arr_monthly.csv"), [Delimiter = ",", Columns = 7, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"account_id", type text}, {"month_end_date", type date}, {"arr_end", type number}, {"new_arr", type number}, {"expansion_arr", type number}, {"contraction_arr", type number}, {"churn_arr", type number}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"account_id", "Account ID"}, {"month_end_date", "Month End Date"}, {"arr_end", "ARR End"}, {"new_arr", "New ARR"}, {"expansion_arr", "Expansion ARR"}, {"contraction_arr", "Contraction ARR"}, {"churn_arr", "Churn ARR"}})
+in
+    Renamed
+
+//////// QUERY NAME: fact_account_health
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_account_health.csv"), [Delimiter = ",", Columns = 19, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"account_id", type text}, {"as_of_date", type date}, {"is_scored", Int64.Type}, {"arr", type number}, {"renewal_date", type date}, {"months_to_renewal", type number}, {"churn_prob_90d", type number}, {"expected_loss_90d", type number}, {"expansion_prob_90d", type number}, {"expected_expansion_90d", type number}, {"login_rate_3m", type number}, {"features_adopted_3m", type number}, {"seat_utilization_3m", type number}, {"tickets_90d", type number}, {"csat_90d", type number}, {"integrations", type number}, {"seats", type number}, {"renews_within_90d", Int64.Type}, {"arr_scored", type number}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"account_id", "Account ID"}, {"as_of_date", "As Of Date"}, {"is_scored", "Is Scored"}, {"arr", "ARR Now"}, {"renewal_date", "Renewal Date"}, {"months_to_renewal", "Months to Renewal"}, {"churn_prob_90d", "Churn Probability"}, {"expected_loss_90d", "Expected ARR Loss"}, {"expansion_prob_90d", "Expansion Probability"}, {"expected_expansion_90d", "Expected Expansion ARR"}, {"login_rate_3m", "Login Rate 3M"}, {"features_adopted_3m", "Features Adopted 3M"}, {"seat_utilization_3m", "Seat Utilization 3M"}, {"tickets_90d", "Support Tickets 90D"}, {"csat_90d", "CSAT 90D"}, {"integrations", "Integrations"}, {"seats", "Seats"}, {"renews_within_90d", "Renews Within 90D"}, {"arr_scored", "Scored ARR"}})
+in
+    Renamed
+
+//////// QUERY NAME: fact_driver
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_driver.csv"), [Delimiter = ",", Columns = 6, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"account_id", type text}, {"model", type text}, {"rank", Int64.Type}, {"driver", type text}, {"impact", type number}, {"direction", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"account_id", "Account ID"}, {"model", "Model"}, {"rank", "Rank"}, {"driver", "Driver"}, {"impact", "Impact"}, {"direction", "Direction"}})
+in
+    Renamed
+
+//////// QUERY NAME: fact_opportunity
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_opportunity.csv"), [Delimiter = ",", Columns = 20, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"opportunity_id", type text}, {"created_date", type date}, {"closed_date", type date}, {"region_key", Int64.Type}, {"industry_key", Int64.Type}, {"rep_key", Int64.Type}, {"stage_key", Int64.Type}, {"outcome", type text}, {"deal_size", type number}, {"discount_pct", type number}, {"competitor", type text}, {"decision_makers_engaged", type number}, {"rep_forecast_pct", type number}, {"loss_reason", type text}, {"days_in_stage", type number}, {"stage_p75_days", type number}, {"is_stalled", Int64.Type}, {"sales_cycle_days", type number}, {"model_win_prob", type number}, {"deal_label", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"opportunity_id", "Opportunity ID"}, {"created_date", "Created Date"}, {"closed_date", "Closed Date"}, {"region_key", "Region Key"}, {"industry_key", "Industry Key"}, {"rep_key", "Rep Key"}, {"stage_key", "Stage Key"}, {"outcome", "Outcome"}, {"deal_size", "Deal Size"}, {"discount_pct", "Discount Pct"}, {"competitor", "Competitor"}, {"decision_makers_engaged", "Decision Makers Engaged"}, {"rep_forecast_pct", "Rep Forecast Pct"}, {"loss_reason", "Loss Reason"}, {"days_in_stage", "Days in Stage"}, {"stage_p75_days", "Stage 75th Pctl Days"}, {"is_stalled", "Is Stalled"}, {"sales_cycle_days", "Sales Cycle Days"}, {"model_win_prob", "Model Win Probability"}, {"deal_label", "Deal Label"}})
+in
+    Renamed
+
+//////// QUERY NAME: fact_lead
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_lead.csv"), [Delimiter = ",", Columns = 13, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"lead_id", type text}, {"created_date", type date}, {"region_key", Int64.Type}, {"industry_key", Int64.Type}, {"lead_source", type text}, {"contact_seniority", type text}, {"demo_requested", Int64.Type}, {"engagement_score", type number}, {"became_opportunity", Int64.Type}, {"reached_discovery", Int64.Type}, {"reached_proposal", Int64.Type}, {"reached_negotiation", Int64.Type}, {"closed_won", Int64.Type}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"lead_id", "Lead ID"}, {"created_date", "Created Date"}, {"region_key", "Region Key"}, {"industry_key", "Industry Key"}, {"lead_source", "Lead Source"}, {"contact_seniority", "Contact Seniority"}, {"demo_requested", "Demo Requested"}, {"engagement_score", "Engagement Score"}, {"became_opportunity", "Became Opportunity"}, {"reached_discovery", "Reached Discovery"}, {"reached_proposal", "Reached Proposal"}, {"reached_negotiation", "Reached Negotiation"}, {"closed_won", "Closed Won"}})
+in
+    Renamed
+
+//////// QUERY NAME: ref_model_scorecard
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "ref_model_scorecard.csv"), [Delimiter = ",", Columns = 10, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"model_name", type text}, {"predicts", type text}, {"validation", type text}, {"algorithm", type text}, {"roc_auc", type number}, {"roc_auc_low", type number}, {"roc_auc_high", type number}, {"base_rate", type number}, {"top10_lift", type number}, {"n_scored", Int64.Type}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"model_name", "Model Name"}, {"predicts", "Predicts"}, {"validation", "Validation"}, {"algorithm", "Algorithm"}, {"roc_auc", "ROC AUC"}, {"roc_auc_low", "ROC AUC Low"}, {"roc_auc_high", "ROC AUC High"}, {"base_rate", "Base Rate"}, {"top10_lift", "Top 10 Lift"}, {"n_scored", "Rows Scored"}})
+in
+    Renamed
+
+//////// QUERY NAME: ref_lead_bands
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "ref_lead_bands.csv"), [Delimiter = ",", Columns = 4, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"score_band", type text}, {"leads", Int64.Type}, {"conversion_rate", type number}, {"band_order", Int64.Type}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"score_band", "Score Band"}, {"leads", "Leads"}, {"conversion_rate", "Conversion Rate"}, {"band_order", "Band Order"}})
+in
+    Renamed
+
+//////// QUERY NAME: ref_funnel
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "ref_funnel.csv"), [Delimiter = ",", Columns = 2, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"step_order", Int64.Type}, {"step", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"step_order", "Step Order"}, {"step", "Step"}})
+in
+    Renamed
+
+//////// QUERY NAME: ref_bridge
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "ref_bridge.csv"), [Delimiter = ",", Columns = 2, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"step_order", Int64.Type}, {"step", type text}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"step_order", "Step Order"}, {"step", "Step"}})
+in
+    Renamed

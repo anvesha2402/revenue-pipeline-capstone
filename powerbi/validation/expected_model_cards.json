@@ -1,0 +1,6 @@
+{
+ "Churn Model AUC": 0.8273712774551707,
+ "Expansion Model AUC": 0.8001786255466643,
+ "Deal Win Model AUC": 0.6521361674059586,
+ "Lead Score Lift": 3.327628361858191
+}

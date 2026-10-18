@@ -1,0 +1,7 @@
+stage_key,stage,stage_order,stage_group
+1,Qualified,1,Open
+2,Discovery,2,Open
+3,Proposal,3,Open
+4,Negotiation,4,Open
+5,Closed Won,5,Won
+6,Closed Lost,6,Lost

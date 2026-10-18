@@ -1,0 +1,8 @@
+let
+    Folder = if Text.EndsWith(FolderPath, "\") then FolderPath else FolderPath & "\",
+    Source = Csv.Document(File.Contents(Folder & "fact_account_health.csv"), [Delimiter = ",", Columns = 19, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Typed = Table.TransformColumnTypes(Headers, {{"account_id", type text}, {"as_of_date", type date}, {"is_scored", Int64.Type}, {"arr", type number}, {"renewal_date", type date}, {"months_to_renewal", type number}, {"churn_prob_90d", type number}, {"expected_loss_90d", type number}, {"expansion_prob_90d", type number}, {"expected_expansion_90d", type number}, {"login_rate_3m", type number}, {"features_adopted_3m", type number}, {"seat_utilization_3m", type number}, {"tickets_90d", type number}, {"csat_90d", type number}, {"integrations", type number}, {"seats", type number}, {"renews_within_90d", Int64.Type}, {"arr_scored", type number}}, "en-US"),
+    Renamed = Table.RenameColumns(Typed, {{"account_id", "Account ID"}, {"as_of_date", "As Of Date"}, {"is_scored", "Is Scored"}, {"arr", "ARR Now"}, {"renewal_date", "Renewal Date"}, {"months_to_renewal", "Months to Renewal"}, {"churn_prob_90d", "Churn Probability"}, {"expected_loss_90d", "Expected ARR Loss"}, {"expansion_prob_90d", "Expansion Probability"}, {"expected_expansion_90d", "Expected Expansion ARR"}, {"login_rate_3m", "Login Rate 3M"}, {"features_adopted_3m", "Features Adopted 3M"}, {"seat_utilization_3m", "Seat Utilization 3M"}, {"tickets_90d", "Support Tickets 90D"}, {"csat_90d", "CSAT 90D"}, {"integrations", "Integrations"}, {"seats", "Seats"}, {"renews_within_90d", "Renews Within 90D"}, {"arr_scored", "Scored ARR"}})
+in
+    Renamed
