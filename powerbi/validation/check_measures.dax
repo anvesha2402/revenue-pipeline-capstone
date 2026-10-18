@@ -1,0 +1,30 @@
+// Paste this whole query into DAX query view (left rail icon), press Run, and compare each value with validation/expected_values.csv (column "No filters").
+EVALUATE
+ROW(
+    "Open Pipeline", [Open Pipeline],
+    "Open Deals", [Open Deals],
+    "Win Rate 12M", [Win Rate 12M],
+    "Avg Sales Cycle Days", [Avg Sales Cycle Days],
+    "Pipeline Velocity per Day", [Pipeline Velocity per Day],
+    "Weighted Pipeline Flat", [Weighted Pipeline Flat],
+    "Weighted Pipeline Model", [Weighted Pipeline Model],
+    "Stalled Pipeline", [Stalled Pipeline],
+    "Leads", [Leads],
+    "Closed Won Leads", [Closed Won Leads],
+    "ARR", [ARR],
+    "Customers", [Customers],
+    "ARR 12M Ago", [ARR 12M Ago],
+    "New ARR 12M", [New ARR 12M],
+    "Expansion ARR 12M", [Expansion ARR 12M],
+    "Contraction ARR 12M", [Contraction ARR 12M],
+    "Churned ARR 12M", [Churned ARR 12M],
+    "Net Revenue Retention 12M", [Net Revenue Retention 12M],
+    "Gross Revenue Retention 12M", [Gross Revenue Retention 12M],
+    "Logo Retention 12M", [Logo Retention 12M],
+    "Expected ARR Loss 90D", [Expected ARR Loss 90D],
+    "Expected Expansion 90D", [Expected Expansion 90D],
+    "Scored ARR", [Scored ARR],
+    "High Churn Risk Accounts", [High Churn Risk Accounts],
+    "Churn Model AUC", [Churn Model AUC],
+    "Lead Score Lift", [Lead Score Lift]
+)
